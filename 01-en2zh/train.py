@@ -9,14 +9,14 @@ from data_load import (get_batch_indices, load_cn_vocab,
 from model import Transformer
 
 # Config
-batch_size = 64 #64
+batch_size = 2 #64
 lr = 0.0001
 d_model = 512
 d_ff = 2048
 n_layers = 6
 heads = 8
 dropout_rate = 0.2
-n_epochs = 60 #60
+n_epochs = 600 #60
 PAD_ID = 0
 
 
@@ -33,7 +33,7 @@ def main():
     Y, X = load_train_data()
     print(Y.shape,X.shape)
 
-    print_interval = 100
+    print_interval = 50
 
     model = Transformer(len(en2idx), len(cn2idx), PAD_ID, d_model, d_ff,
                         n_layers, heads, dropout_rate, maxlen)

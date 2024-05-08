@@ -12,7 +12,7 @@ import requests
 # Words whose occurred less than min_cnt are encoded as <UNK>.
 min_cnt = 0
 # Maximum number of words in a sentence.
-maxlen = 50
+maxlen = 10
 
 source_train = 'data/cn.txt'
 target_train = 'data/en.txt'
@@ -107,7 +107,7 @@ def load_train_data():
 
 
 def load_test_data():
-    X, Y, _, _ = load_data('test')
+    X, Y, _, _  = load_data('test')
     return X, Y
 
 
