@@ -82,7 +82,7 @@ def main():
                       f' loss: {loss.item()} acc: {acc.item()}')
             cnter += 1
 
-    model_path = 'models/model.pth'
+    model_path = 'runs/model.pth'
     torch.save(model.state_dict(), model_path)
 
     print(f'Model saved to {model_path}')

@@ -25,7 +25,7 @@ def main():
     model.to(device)
     model.eval()
 
-    model_path = 'models/model.pth'
+    model_path = 'runs/model.pth'
     model.load_state_dict(torch.load(model_path))
 
  
