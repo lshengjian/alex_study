@@ -124,6 +124,5 @@ class GraphAttentionEncoder(nn.Module):
         assert mask is None, "TODO mask not yet supported!"
 
         h = self.layers(x)
-        #print(f'GraphAttentionEncoder input size:{x.size()} hide size:{h.size()}')
 
         return (h, h.mean(dim=1))

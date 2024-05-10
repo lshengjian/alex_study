@@ -113,10 +113,7 @@ class Decoder(nn.Module):
             sequences.append(action)
 
         # Collected lists, return Tensor
-        rt=torch.stack(outputs, 1), torch.stack(sequences, 1)
-        # print(f'Decoder[{self.decode_type}] input size:{input.size()} embeddings:{embeddings.size()}')
-        # print(f'Decoder output size:{rt.size()}')
-        return rt
+        return torch.stack(outputs, 1), torch.stack(sequences, 1)
 
     def set_decode_type(self, decode_type):
         r"""

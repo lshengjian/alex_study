@@ -90,9 +90,14 @@ class Agent(nn.Module):
         self.actor = Actor()
 
     def forward(self, x):  # only actor
+        
         x = self.backbone(x)
+  
         logits = self.actor(x)
+
+        print(logits.size())
         action = logits.max(2)[1]
+        print(action.size())
         return action, logits
 
     def get_value(self, x):
@@ -134,7 +139,9 @@ class stateWrapper:
         self.states = {k: torch.tensor(v, device=self.device) for k, v in states.items()}
         if problem == "tsp":
             self.is_initial_action = self.states["is_initial_action"].to(torch.bool)
+            print(self.is_initial_action)
             self.first_a = self.states["first_node_idx"]
+            print(self.first_a)
         elif problem == "cvrp":
             input = {
                 "loc": self.states["observations"],

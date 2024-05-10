@@ -6,14 +6,14 @@ from wrappers.syncVectorEnvPomo import SyncVectorEnv
 from wrappers.recordWrapper import RecordEpisodeStatistics
 
 device = 'cpu'
-ckpt_path = './runs/tsp-v0__ppo_or__1__1678160003/ckpt/12000.pt'
+ckpt_path = './data/tsp-12000.pt'
 agent = Agent(device=device, name='tsp').to(device)
 agent.load_state_dict(torch.load(ckpt_path,map_location='cpu'))
 
 
 env_id = 'tsp-v0'
 env_entry_point = 'envs.tsp_vector_env:TSPVectorEnv'
-seed = 0
+
 
 gym.envs.register(
     id=env_id,
@@ -32,13 +32,13 @@ def make_env(env_id, seed, cfg={}):
 
 env_id='tsp'
 seed=123
-envs = SyncVectorEnv([make_env(env_id, seed + i, dict(n_traj=1)) for i in range(3)])
+envs = SyncVectorEnv([make_env(env_id, seed + i, dict(n_traj=2)) for i in range(1)])
 print(f'observation_space:')
 for k,v in envs.observation_space.items():
     print(k,v)
 print(f'action_space:{envs.action_space}')
 
-num_steps = 51
+num_steps = 5
 trajectories = []
 agent.eval()
 obs = envs.reset()
@@ -50,9 +50,6 @@ for step in range(0,num_steps ):#
     with torch.no_grad():
         action, logits = agent(obs)
     obs, reward, done, info = envs.step(action.cpu().numpy())
-    if step==0:
-        print(f'aciton size:{action.shape}')
-        #print(info)
     trajectories.append(action.cpu().numpy())
 print(f'trajectories :{np.array(trajectories).shape}')
-print(trajectories)
+print(np.array(trajectories))

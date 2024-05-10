@@ -42,7 +42,6 @@ class TSPEmbedding(nn.Module):
         self.init_embed = nn.Linear(node_dim, embedding_dim)
 
     def forward(self, input):
-        #print(f'TSPEmbedding input size:{input.size()}')
         out = self.init_embed(input)
         return out
 

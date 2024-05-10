@@ -36,11 +36,11 @@ def parse_args():
         help="whether to capture videos of the agent performances (check out `videos` folder)")
 
     # Algorithm specific arguments
-    parser.add_argument("--problem", type=str, default="tsp",
+    parser.add_argument("--problem", type=str, default="cvrp",
         help="the OR problem we are trying to solve, it will be passed to the agent")
-    parser.add_argument("--env-id", type=str, default="tsp-v0",
+    parser.add_argument("--env-id", type=str, default="cvrp-v0",
         help="the id of the environment")
-    parser.add_argument("--env-entry-point", type=str, default="envs.tsp_vector_env:TSPVectorEnv",
+    parser.add_argument("--env-entry-point", type=str, default="envs.cvrp_vector_env:CVRPVectorEnv",
         help="the path to the definition of the environment, for example `envs.cvrp_vector_env:CVRPVectorEnv` if the `CVRPVectorEnv` class is defined in ./envs/cvrp_vector_env.py")
     parser.add_argument("--total-timesteps", type=int, default=6_000_000_000,
         help="total timesteps of the experiments")
@@ -50,7 +50,7 @@ def parse_args():
         help="the weight decay of the optimizer")
     parser.add_argument("--num-envs", type=int, default=1024,
         help="the number of parallel game environments")
-    parser.add_argument("--num-steps", type=int, default=51,
+    parser.add_argument("--num-steps", type=int, default=100,
         help="the number of steps to run in each environment per policy rollout")
     parser.add_argument("--anneal-lr", type=lambda x: bool(strtobool(x)), default=True, nargs="?", const=True,
         help="Toggle learning rate annealing for policy and value networks")
@@ -156,8 +156,7 @@ if __name__ == "__main__":
             make_env(
                 args.env_id,
                 args.seed + i,
-                cfg={"eval_data": False}
-                #cfg={"eval_data": True, "eval_partition": "eval", "eval_data_idx": i},
+                cfg={"eval_data": True, "eval_partition": "eval", "eval_data_idx": i},
             )
             for i in range(args.n_test)
         ]
@@ -209,7 +208,7 @@ if __name__ == "__main__":
             lrnow = frac * args.learning_rate
             optimizer.param_groups[0]["lr"] = lrnow
         next_obs = envs.reset()
-        encoder_state = agent.backbone.encode(next_obs) #!!!
+        encoder_state = agent.backbone.encode(next_obs)
         next_done = torch.zeros(args.num_envs, args.n_traj).to(device)
         r = []
         for step in range(0, args.num_steps):
