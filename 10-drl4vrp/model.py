@@ -190,6 +190,8 @@ class DRL4TSP(nn.Module):
         # their representations will need to get calculated again.
         static_hidden = self.static_encoder(static)
         dynamic_hidden = self.dynamic_encoder(dynamic)
+        print(static_hidden.detach().size())
+        print(dynamic_hidden.detach().size())
 
         for _ in range(max_steps):
 
@@ -203,17 +205,21 @@ class DRL4TSP(nn.Module):
                                           dynamic_hidden,
                                           decoder_hidden, last_hh)
             probs = F.softmax(probs + mask.log(), dim=1)
+            print(probs.detach().numpy())
 
             # When training, sample the next step according to its probability.
             # During testing, we can take the greedy approach and choose highest
             if self.training:
                 m = torch.distributions.Categorical(probs)
+                
 
                 # Sometimes an issue with Categorical & sampling on GPU; See:
                 # https://github.com/pemami4911/neural-combinatorial-rl-pytorch/issues/5
                 ptr = m.sample()
+                
                 while not torch.gather(mask, 1, ptr.data.unsqueeze(1)).byte().all():
                     ptr = m.sample()
+                print(ptr.detach().numpy())
                 logp = m.log_prob(ptr)
             else:
                 prob, ptr = torch.max(probs, 1)  # Greedy

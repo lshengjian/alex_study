@@ -32,7 +32,7 @@ class StateCritic(nn.Module):
     """
 
     def __init__(self, static_size, dynamic_size, hidden_size):
-        super(StateCritic, self).__init__()
+        super().__init__()
 
         self.static_encoder = Encoder(static_size, hidden_size)
         self.dynamic_encoder = Encoder(dynamic_size, hidden_size)
@@ -155,6 +155,9 @@ def train(actor, critic, task, num_nodes, train_data, valid_data, reward_fn,
         for batch_idx, batch in enumerate(train_loader):
 
             static, dynamic, x0 = batch
+            # print(static.size())
+            # print(dynamic.size())
+            # print(x0)
 
             static = static.to(device)
             dynamic = dynamic.to(device)
@@ -162,6 +165,12 @@ def train(actor, critic, task, num_nodes, train_data, valid_data, reward_fn,
 
             # Full forward pass through the dataset
             tour_indices, tour_logp = actor(static, dynamic, x0)
+            idxs=tour_indices.detach().numpy()
+            ps=tour_logp.detach().numpy()
+            # print(idxs.size())
+            # print(ps.size())
+            # print(idxs)
+            # print(ps)
 
             # Sum the log probabilities for each city in the tour
             reward = reward_fn(static, tour_indices)
@@ -367,11 +376,11 @@ if __name__ == '__main__':
     parser.add_argument('--checkpoint', default=None)
     parser.add_argument('--test', action='store_true', default=False)
     parser.add_argument('--task', default='tsp')
-    parser.add_argument('--nodes', dest='num_nodes', default=20, type=int)
+    parser.add_argument('--nodes', dest='num_nodes', default=5, type=int)
     parser.add_argument('--actor_lr', default=5e-4, type=float)
     parser.add_argument('--critic_lr', default=5e-4, type=float)
     parser.add_argument('--max_grad_norm', default=2., type=float)
-    parser.add_argument('--batch_size', default=64, type=int)
+    parser.add_argument('--batch_size', default=3, type=int)
     parser.add_argument('--hidden', dest='hidden_size', default=128, type=int)
     parser.add_argument('--dropout', default=0.1, type=float)
     parser.add_argument('--layers', dest='num_layers', default=1, type=int)

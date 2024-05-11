@@ -20,8 +20,8 @@ import matplotlib.pyplot as plt
 
 class TSPDataset(Dataset):
 
-    def __init__(self, size=50, num_samples=1e6, seed=None):
-        super(TSPDataset, self).__init__()
+    def __init__(self, size=20, num_samples=1e6, seed=None):
+        super().__init__()
 
         if seed is None:
             seed = np.random.randint(123456789)
