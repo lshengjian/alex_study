@@ -39,12 +39,12 @@ def main():
     env = gym.make('CartPole-v1')
     pi = Policy()
     score = 0.0
-    print_interval = 20
+    print_interval = 100
     
-    for n_epi in range(5000):
+    for n_epi in range(2001):
         s, _ = env.reset()
-        done = False
-        while not done: # CartPole-v1 forced to terminates at 500 step.
+        done ,truncated= False,False
+        while not (done or truncated): # CartPole-v1 forced to terminates at 500 step.
             prob = pi(torch.from_numpy(s).float())
             m = Categorical(prob)
             a = m.sample()

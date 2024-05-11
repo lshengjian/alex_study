@@ -67,7 +67,6 @@ class PPO(nn.Module):
             advantage_lst = []
             advantage = 0.0
             for delta_t in delta[::-1]:
-                print(delta_t)
                 advantage = gamma * lmbda * advantage + delta_t[0]
                 advantage_lst.append([advantage])
             advantage_lst.reverse()
@@ -91,10 +90,10 @@ def main():
     score = 0.0
     print_interval = 20
 
-    for n_epi in range(5000):
+    for n_epi in range(2001):
         s, _ = env.reset()
-        done = False
-        while not done:
+        done ,truncated= False,False
+        while not (done or truncated): # CartPole-v1 forced to terminates at 500 step.
             for t in range(T_horizon):
                 prob = model.pi(torch.from_numpy(s).float())
                 m = Categorical(prob)
@@ -105,7 +104,7 @@ def main():
                 s = s_prime
 
                 score += r
-                if done:
+                if done or truncated:
                     break
 
             model.train_net()
