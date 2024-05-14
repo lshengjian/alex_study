@@ -345,6 +345,8 @@ if __name__ == '__main__':
     print('Loading dataset...')
     # Load the dataset
     features, labels, adj_mat = load_cora(device=device)
+    print(features.shape,labels.shape)
+    print(len(adj_mat),len(adj_mat[0]))
     # Split the dataset into training, validation, and test sets
     idx = torch.randperm(len(labels)).to(device)
     idx_test, idx_val, idx_train = idx[:1200], idx[1200:1600], idx[1600:]
