@@ -87,7 +87,7 @@ def load_pkl(pkl_path, verbose = True):
 def pkl_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-p', '--path', metavar = 'P', type = str, 
-						default = 'Pkl/test20.pkl', help = 'pkl file name')
+						default = 'Pkl/train20.pkl', help = 'pkl file name')
 	args = parser.parse_args()
 	return args
 	

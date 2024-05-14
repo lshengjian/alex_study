@@ -55,20 +55,25 @@ class PtrNet1(nn.Module):
 			return: pi: (batch, city_t), ll: (batch)
 		'''
 		x = x.to(device)
+		print(x.size())
 		batch, city_t, _ = x.size()
 		embed_enc_inputs = self.Embedding(x)
 		embed = embed_enc_inputs.size(2)
 		mask = torch.zeros((batch, city_t), device = device)
 		enc_h, (h, c) = self.Encoder(embed_enc_inputs, None)
 		ref = enc_h
+		#print(ref.size())
 		pi_list, log_ps = [], []
+		print(self.dec_input.size())
 		dec_input = self.dec_input.unsqueeze(0).repeat(batch,1).unsqueeze(1).to(device)
+		#print(dec_input.size())
 		for i in range(city_t):
 			_, (h, c) = self.Decoder(dec_input, (h, c))
 			query = h.squeeze(0)
 			for i in range(self.n_glimpse):
 				query = self.glimpse(query, ref, mask)
-			logits = self.pointer(query, ref, mask)	
+			logits = self.pointer(query, ref, mask)
+			#print(query.size(),mask.size(),logits.size())	
 			log_p = torch.log_softmax(logits, dim = -1)
 			next_node = self.city_selecter(log_p)
 			dec_input = torch.gather(input = embed_enc_inputs, dim = 1, index = next_node.unsqueeze(-1).unsqueeze(-1).repeat(1, 1, embed))
@@ -76,7 +81,7 @@ class PtrNet1(nn.Module):
 			pi_list.append(next_node)
 			log_ps.append(log_p)
 			mask += torch.zeros((batch,city_t), device = device).scatter_(dim = 1, index = next_node.unsqueeze(1), value = 1)
-			
+			#print(mask.detach().numpy())
 		pi = torch.stack(pi_list, dim = 1)
 		ll = self.get_log_likelihood(torch.stack(log_ps, 1), pi)
 		return pi, ll 
@@ -134,7 +139,7 @@ class PtrNet1(nn.Module):
 if __name__ == '__main__':
 	cfg = load_pkl(pkl_parser().path)
 	model = PtrNet1(cfg)
-	inputs = torch.randn(3,20,2)	
+	inputs = torch.randn(3,5,2)	
 	pi, ll = model(inputs, device = 'cpu')	
 	print('pi:', pi.size(), pi)
 	print('log_likelihood:', ll.size(), ll)
