@@ -16,7 +16,7 @@ def argparser():
 	parser.add_argument('-e', '--embed', metavar = 'EM', type = int, default = 128, help = 'embedding size')
 	parser.add_argument('-hi', '--hidden', metavar = 'HI', type = int, default = 128, help = 'hidden size')
 	parser.add_argument('-c', '--clip_logits', metavar = 'C', type = int, default = 10, help = 'improve exploration; clipping logits')
-	parser.add_argument('-st', '--softmax_T', metavar = 'ST', type = float, default = 1.0, help = 'might improve exploration; softmax temperature default 1.0 but 2.0, 2.2 and 1.5 might yield better results')
+	parser.add_argument('-st', '--softmax_T', metavar = 'ST', type = float, default = 2.0, help = 'might improve exploration; softmax temperature default 1.0 but 2.0, 2.2 and 1.5 might yield better results')
 	parser.add_argument('-o', '--optim', metavar = 'O', type = str, default = 'Adam', help = 'torch optimizer')
 	parser.add_argument('-minv', '--init_min', metavar = 'MINV', type = float, default = -0.08, help = 'initialize weight minimun value -0.08~')
 	parser.add_argument('-maxv', '--init_max', metavar = 'MAXV', type = float, default = 0.08, help = 'initialize weight ~0.08 maximum value')

@@ -32,19 +32,17 @@ def load_vocab(language):
     return word2idx, idx2word
 
 
-def load_cn_vocab():
-    word2idx, idx2word = load_vocab('cn')
-    return word2idx, idx2word
+# def load_vocab(language='en'):
+#     word2idx, idx2word = load_vocab(language)
+#     return word2idx, idx2word
 
 
-def load_en_vocab():
-    word2idx, idx2word = load_vocab('en')
-    return word2idx, idx2word
+
 
 
 def create_data(source_sents, target_sents):
-    cn2idx, idx2cn = load_cn_vocab()
-    en2idx, idx2en = load_en_vocab()
+    cn2idx, idx2cn = load_vocab('cn')
+    en2idx, idx2en = load_vocab('en')
 
     # Index
     x_list, y_list, Sources, Targets = [], [], [], []

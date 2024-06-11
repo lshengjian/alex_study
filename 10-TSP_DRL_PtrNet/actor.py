@@ -55,7 +55,7 @@ class PtrNet1(nn.Module):
 			return: pi: (batch, city_t), ll: (batch)
 		'''
 		x = x.to(device)
-		print(x.size())
+		#print(x.size())
 		batch, city_t, _ = x.size()
 		embed_enc_inputs = self.Embedding(x)
 		embed = embed_enc_inputs.size(2)
@@ -64,7 +64,7 @@ class PtrNet1(nn.Module):
 		ref = enc_h
 		#print(ref.size())
 		pi_list, log_ps = [], []
-		print(self.dec_input.size())
+		#print(self.dec_input.size())
 		dec_input = self.dec_input.unsqueeze(0).repeat(batch,1).unsqueeze(1).to(device)
 		#print(dec_input.size())
 		for i in range(city_t):
@@ -141,8 +141,8 @@ if __name__ == '__main__':
 	model = PtrNet1(cfg)
 	inputs = torch.randn(3,5,2)	
 	pi, ll = model(inputs, device = 'cpu')	
-	print('pi:', pi.size(), pi)
-	print('log_likelihood:', ll.size(), ll)
+	# print('pi:', pi.size(), pi)
+	# print('log_likelihood:', ll.size(), ll)
 
 	cnt = 0
 	for i, k in model.state_dict().items():

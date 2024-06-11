@@ -51,7 +51,7 @@ def train_model(cfg, env, log_path = None):
 	t1 = time()
 	# for i, inputs in tqdm(enumerate(dataloader)):
 	for i, inputs in enumerate(dataloader):
-		print(inputs.size())
+		#print(inputs.size())
 		inputs = inputs.to(device)
 		pred_tour, ll = act_model(inputs, device)
 		real_l = env.stack_l_fast(inputs, pred_tour)

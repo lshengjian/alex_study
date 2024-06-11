@@ -75,7 +75,11 @@ class Pointer(nn.Module):
     def forward(self, static_hidden, dynamic_hidden, decoder_hidden, last_hh):
 
         rnn_out, last_hh = self.gru(decoder_hidden.transpose(2, 1), last_hh)
+        print(rnn_out.shape,last_hh.shape)
+
         rnn_out = rnn_out.squeeze(1)
+        print(last_hh.shape)
+
 
         # Always apply dropout on the RNN output
         rnn_out = self.drop_rnn(rnn_out)
@@ -85,6 +89,7 @@ class Pointer(nn.Module):
 
         # Given a summary of the output, find an  input context
         enc_attn = self.encoder_attn(static_hidden, dynamic_hidden, rnn_out)
+        print(enc_attn.shape)
         context = enc_attn.bmm(static_hidden.permute(0, 2, 1))  # (B, 1, num_feats)
 
         # Calculate the next output using Batch-matrix-multiply ops
@@ -177,6 +182,7 @@ class DRL4TSP(nn.Module):
 
         if decoder_input is None:
             decoder_input = self.x0.expand(batch_size, -1, -1)
+            print(decoder_input.shape)
 
         # Always use a mask - if no function is provided, we don't update it
         mask = torch.ones(batch_size, sequence_size, device=device)
@@ -190,8 +196,9 @@ class DRL4TSP(nn.Module):
         # their representations will need to get calculated again.
         static_hidden = self.static_encoder(static)
         dynamic_hidden = self.dynamic_encoder(dynamic)
-        print(static_hidden.detach().size())
-        print(dynamic_hidden.detach().size())
+        print(static.shape,static_hidden.shape)
+        print(dynamic.shape,dynamic_hidden.shape)
+
 
         for _ in range(max_steps):
 
@@ -200,12 +207,14 @@ class DRL4TSP(nn.Module):
 
             # ... but compute a hidden rep for each element added to sequence
             decoder_hidden = self.decoder(decoder_input)
+            print(decoder_input.shape,decoder_hidden.shape)
 
             probs, last_hh = self.pointer(static_hidden,
                                           dynamic_hidden,
                                           decoder_hidden, last_hh)
+            print(last_hh.shape)
             probs = F.softmax(probs + mask.log(), dim=1)
-            print(probs.detach().numpy())
+
 
             # When training, sample the next step according to its probability.
             # During testing, we can take the greedy approach and choose highest
@@ -219,7 +228,7 @@ class DRL4TSP(nn.Module):
                 
                 while not torch.gather(mask, 1, ptr.data.unsqueeze(1)).byte().all():
                     ptr = m.sample()
-                print(ptr.detach().numpy())
+                #print(ptr)
                 logp = m.log_prob(ptr)
             else:
                 prob, ptr = torch.max(probs, 1)  # Greedy
@@ -242,6 +251,7 @@ class DRL4TSP(nn.Module):
 
             tour_logp.append(logp.unsqueeze(1))
             tour_idx.append(ptr.data.unsqueeze(1))
+            print(tour_idx)
 
             decoder_input = torch.gather(static, 2,
                                          ptr.view(-1, 1, 1)

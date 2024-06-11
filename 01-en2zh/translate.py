@@ -1,7 +1,7 @@
 import torch
 
-from data_load import (idx_to_sentence, load_cn_vocab,load_test_data,load_train_data,
-                                           load_en_vocab, maxlen)
+from data_load import (idx_to_sentence, load_vocab,load_test_data,
+                                            maxlen)
 from model import Transformer
 
 
@@ -17,8 +17,8 @@ PAD_ID = 0
 
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    cn2idx, idx2cn = load_cn_vocab()
-    en2idx, idx2en = load_en_vocab()
+    cn2idx, idx2cn = load_vocab('cn')
+    en2idx, idx2en = load_vocab('en')
 
     model = Transformer(len(en2idx), len(cn2idx), 0, d_model, d_ff, n_layers,
                         heads, dropout_rate, maxlen)

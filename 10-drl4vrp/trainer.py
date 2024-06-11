@@ -376,7 +376,7 @@ if __name__ == '__main__':
     parser.add_argument('--checkpoint', default=None)
     parser.add_argument('--test', action='store_true', default=False)
     parser.add_argument('--task', default='tsp')
-    parser.add_argument('--nodes', dest='num_nodes', default=5, type=int)
+    parser.add_argument('--nodes', dest='num_nodes', default=6, type=int)
     parser.add_argument('--actor_lr', default=5e-4, type=float)
     parser.add_argument('--critic_lr', default=5e-4, type=float)
     parser.add_argument('--max_grad_norm', default=2., type=float)
